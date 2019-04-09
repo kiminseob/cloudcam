@@ -1,0 +1,348 @@
+<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE HTML>
+{% load staticfiles %}
+{% load search_content %}
+<html>
+	<head>
+		<title>우리동네 개.찾.캠</title>
+		<meta charset="utf-8">
+		<link href="{% static 'css/style.css' %}" rel='stylesheet' type='text/css' />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="shortcut icon" type="image/x-icon" href=" {% static 'images/fav-icon.png' %}" />
+			<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+		
+
+		<!-- 부가적인 테마 -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+		<!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+		<!-- webfonts -->
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+		<!-- webfonts -->
+		<!-- Global CSS for the page and tiles -->
+		<link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+  		<!-- Global CSS for the page and tiles -->
+		<!-- start-click-drop-down-menu -->
+		<script src="{% static 'js/jquery.min.js'%}"></script>
+
+        <!-- //End-dropdown -->
+		<!-- End-click-drop-down-menu -->
+		<style>
+		.button {
+			background-color: #4CAF50;
+			border: none;
+			color: white;
+			padding: 10px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 14px;
+			display:block;
+			cursor: pointer;
+			border-radius: 15px;
+		}
+		.center {
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			width: 50%;
+		}
+		span{
+			font-family: "Nanum Gothic", sans-serif;
+		}
+		.video-wrapper {
+            width: 320px;
+            height: 200px;
+            position: relative;
+			}
+			canvas {
+					width: 500px;
+					height: 300px;
+			}
+			.canvasImg {
+				background-color: #4cb4f0;
+			}
+		</style>
+		
+	</head>
+	<body>
+			<script type="text/javascript">
+				function changeRegion(){
+					var selectValue = document.getElementById("region").value;
+					var dong_select = document.getElementById("dong");
+					dong_select.style = "display:inline-block"
+					if(selectValue=="서울특별시"){
+						dong_select.style = "display:inline-block"
+							dong_select.options[1].innerHTML = "역삼동"
+							dong_select.options[2].innerHTML = "강남동"
+					}
+					else if(selectValue=="대전광역시"){
+						dong_select.style = "display:inline-block"
+						dong_select.options[1].innerHTML = "둔산동"
+						dong_select.options[2].innerHTML = "태평동"
+					}
+					else if(selectValue=="부산광역시"){
+						dong_select.style = "display:inline-block"
+						dong_select.options[1].innerHTML = "해운대"
+						dong_select.options[2].innerHTML = "링딩동"
+					}
+					else{
+						dong_select.style = "display:none"
+					}
+					
+				}
+				function regionSearch(id){
+					document.getElementById(id).submit();
+				}
+		</script>
+		<script>
+							
+				// cctv play
+				function fn_onSetUrl(streamurl, videoCanvasId, imgId) {
+						var img = document.getElementById(imgId)
+						var canv = document.getElementById(videoCanvasId)
+						
+						img.style = "display: none"
+						canv.style = "display:inline-block;width:100%;height:249px;border:1px solid"
+
+						$.ajax(
+								{
+								type: 'POST',
+								url: 'myIp:2022/get_stream',
+								processData: false,
+								contentType: 'application/json',
+								data: JSON.stringify(
+								{
+										"streamUrl": streamurl
+								}),
+								error : function(request, status, error) { 
+										console.log("error code : " + request.status + "\n" + "message : " + request.responseText + "\n" + "error : " + error)
+								},
+								success: function(r)
+								{
+										console.log("success : " + r.proxy);
+										
+								},
+								complete : function(xhr) {
+										console.log("complete");
+										setTimeout(function( parm1, parm2){
+												var player;	
+												// player 생성
+												player = new Player({ streamUrl : parm1}, parm2);
+												// player 구동
+												player.init();
+										}, 3000, streamurl, videoCanvasId); // 3000ms(3초)가 경과하면 함수를 실행합니다.
+										
+								}
+
+						});
+						
+						
+				}
+				function fn_play(streamurl, videoCanvasId){
+						var player;	
+						// player 생성
+						player = new Player({ streamUrl : streamurl},videoCanvasId);
+						// player 구동
+						player.init();
+				}
+				
+				
+		</script>
+			<div class="header" display="block">
+				<div class="wrap">
+						
+						<a href="index.html" class="center"><img src="{%static 'images/logo.png'%}" /></a>
+						
+						<form action="index.html" method="get" id="search">
+							
+							<select name="region" id="region" onchange="changeRegion() "class="btn btn-warning" >
+								{% region request.get_full_path as region %}
+								<option value="all" {% if region == -1 %} selected="selected"{% endif %}>지역(전체)</option>
+								<option value="서울특별시"{% if region == 0 %} selected="selected"{% endif %}>서울특별시</option>
+								<option value="대전광역시"{% if region == 1 %} selected="selected"{% endif %}>대전광역시</option>
+								<option value="부산광역시"{% if region == 2 %} selected="selected"{% endif %}>부산광역시</option>
+							</select>
+
+							<select name="dong" id="dong"class="btn btn-warning" {% if region == -1 %}style="display:none"{% endif %}>
+								{% dong request.get_full_path as dong %}
+								{% if region == 0 %}
+									<option value="all" {% if dong == -1 %} selected="selected"{% endif %}>동(전체)</option>
+									<option value="역삼동"{% if dong == 0 %} selected="selected"{% endif %}>역삼동</option>
+									<option value="강남동"{% if dong == 1 %} selected="selected"{% endif %}>강남동</option>
+								{% elif region == 1 %}
+									<option value="all" {% if dong == -1 %} selected="selected"{% endif %}>동(전체)</option>
+									<option value="둔산동"{% if dong == 0 %} selected="selected"{% endif %}>둔산동</option>
+									<option value="태평동"{% if dong == 1 %} selected="selected"{% endif %}>태평동</option>
+								{% elif region == 2 %}
+									<option value="all" {% if dong == -1 %} selected="selected"{% endif %}>동(전체)</option>
+									<option value="해운대"{% if dong == 0 %} selected="selected"{% endif %}>해운대</option>
+									<option value="링딩동"{% if dong == 1 %} selected="selected"{% endif %}>링딩동</option>
+								{% else %}
+									<option display="none" value="all" {% if dong == -1 %} selected="selected"{% endif %}>동(전체)</option>
+									<option display="none" value="all"{% if dong == 0 %} selected="selected"{% endif %}></option>
+									<option display="none" value="all"{% if dong == 1 %} selected="selected"{% endif %}></option>
+
+								{% endif %}
+							</select>
+							<img src="{%static 'images/search-icon.png'%}"  style="cursor:pointer; width:30px; height:30px;" id="search" onclick="regionSearch('search')"/>
+						</form>
+					
+					
+						<div style="float:right;">
+								  <a href="myIp:2001/DSC/mydog.html"><img src="{%static 'images/my_dog.png'%}"style="width:60px; height: 60px" /><span style="color: #0b91df">나의 동물</span></a>
+									<a href="myIp:2001/DSC/setDog.html"><img src="{%static 'images/dog.png'%}" style="width:60px; height: 60px"/><span style="color: #0b91df" >동물 등록</span></a>
+									<a href="myIp:2001/DSC/setCam.html"><img src="{%static 'images/webcam.png'%}"style="width:60px; height: 60px" /><span style="color: #0b91df">캠 공유</span></a>								
+						</div>
+				</div>
+		</div>
+		<!--//End-header-->
+		<!--start-content-->
+	<br/>
+<br/><br/>
+		<div class="content" display="block">
+			<div class="wrap">
+				
+			</br>
+			<!-- 검색된 내역 -->
+			<div id="main" role="main">
+			
+				<ul id="tiles">
+					  {% cctv_num 21 as num%}
+						{% for i in num %}
+						<li style="background-color: #4cb4f0">
+							{% stringToInt as img_path%}
+							<canvas  class="videoCanvas" id="videoCanvas{{i}}" style="display:none;"></canvas>
+							<img class='canvasImg' id="img{{i}}" style="width:100%;height:250px;" src="{%static img_path %}" onclick="fn_onSetUrl('rtsp://211.252.223.178/227/video3d','videoCanvas{{i}}','img{{i}}')"/>
+							<h4 onclick="javascript:window.open('myIp:2001/DSC/contents.html','','width=1024px,height=900px,scrollbars=yes,resizable=no,name=sector_{{i}}');return false" 
+											value="강쥐" style="color:rgb(0, 0, 0)"><blod>영상 속의 반려견 찾기 click☜</blod></h4>
+						</li>	
+						{%endfor%}			
+				</ul>
+			
+			</div>
+			</div>
+		</div>
+		<!--//End-content-->
+
+
+	<!--wookmark-scripts-->
+	<script src="{% static 'js/jquery.imagesloaded.js'%}"></script>
+	<script src="{% static 'js/jquery.wookmark.js'%}"></script>
+		
+	<!-- Media player library load -->
+	<script type="text/javascript" src="{% static 'js/jsmpg.js'%}"></script>
+	<script type="text/javascript" src="{% static 'js/player_mpeg1video.js'%}"></script>
+	
+	<script>
+		$(document).ready(function(){
+				//로그인 요청
+				$.ajax(
+                {
+                type: 'post',
+                url: 'http://ccaapigw.skbroadband.com:9008/do/vcapi/mobile/user/login',
+                //processData: false,
+								//contentType: 'application/json',
+								
+								headers:{
+									'Accept-Language':'ko', 
+									'Content-type': 'application/x-www-form-urlencoded'
+								},								
+                data: JSON.stringify(
+                {
+									"cmd": "login.t_view_platform",
+									"userId": "API_TEST03",  
+									"deviceId": "11 22 333423415", 
+									"userPwd": "myPwd",
+									"deviceType": "pc",   
+									"appId": "skbbss",   
+									"cflag": "no",   
+									"pwdEncNew": "Y"
+
+                }),
+                error : function(request, status, error) { 
+                    console.log("error code : " + request.status + "\n" + "message : " + request.responseText + "\n" + "error : " + error)
+                },
+                success: function(r)
+                {
+										console.log("로그인 성공");     
+                    console.log("success : " + r);
+                   
+                },
+                complete : function(xhr) {
+                    console.log("로그인 요청 완료");                    
+                }
+
+            });
+			})
+	</script>
+
+		<script type="text/javascript">
+				(function ($){
+
+				  var $tiles = $('#tiles'),
+					  $handler = $('li', $tiles),
+					  $main = $('#main'),
+					  $window = $(window),
+					  $document = $(document),
+					  options = {
+						autoResize: true, // This will auto-update the layout when the browser window is resized.
+						container: $main, // Optional, used for some extra CSS styling
+						offset: 20, // Optional, the distance between grid items
+						itemWidth:280 // Optional, the width of a grid item
+						};
+				  /**
+				   * Reinitializes the wookmark handler after all images have loaded
+				   */
+				  function applyLayout() {
+						$tiles.imagesLoaded(function() {
+							// Destroy the old handler
+							if ($handler.wookmarkInstance) {
+							$handler.wookmarkInstance.clear();
+							}
+				
+							// Create a new layout handler.
+							$handler = $('li', $tiles);
+							$handler.wookmark(options);
+						});
+					}
+					
+				  /**
+				   * When scrolled all the way to the bottom, add more tiles
+				   *//*
+				  function onScroll() {
+					// Check if we're within 100 pixels of the bottom edge of the broser window.
+					var winHeight = window.innerHeight ? window.innerHeight : $window.height(), // iphone fix
+						closeToBottom = ($window.scrollTop() + winHeight > $document.height() - 100);
+			
+					if (closeToBottom) {
+					  // Get the first then items from the grid, clone them, and add them to the bottom of the grid
+					  var $items = $('li', $tiles),
+						  $firstTen = $items.slice(0, 10);
+					  $tiles.append($firstTen.clone());
+			
+					  applyLayout();
+					}
+				  };
+					*/
+				  // Call the layout function for the first time
+				  applyLayout();
+				  // Capture scroll event.
+				  //$window.bind('scroll.wookmark', onScroll);
+				})(jQuery);
+			
+		</script>
+		<!--//wookmark-scripts-->	
+
+	</body>
+	
+</html>
+

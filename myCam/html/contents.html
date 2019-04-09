@@ -1,0 +1,89 @@
+{% load search_content %}
+{% load staticfiles %}
+<!-- 합쳐지고 최소화된 최신 CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+<!-- 부가적인 테마 -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+<!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<!----webfonts---->
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+<!----//webfonts---->
+<!-- Global CSS for the page and tiles -->
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<!-- //Global CSS for the page and tiles -->
+<!---start-click-drop-down-menu----->
+<script src="{% static 'js/jquery.min.js'%}"></script>
+
+<style>
+	span,p,h1{
+			font-family: "Nanum Gothic", sans-serif;
+		}
+</style>
+	<div class="single-page">
+		<div class="single-page-artical">
+				<div class="artical-content">
+					
+					<p id="title" style="text-align: center;font-weight: 900;font-size: 2em;">해당 클라우드캠이 설치된 지역의 실종반려동물입니다.</p>
+					<div style="display:inline-block">
+						<img src="http://www.angel.or.kr/report/dog/upThumb/1551871426_217180837.jpg"/>
+						
+						<p>지역 : 경기도 양주시
+						<br>실종 위치 : 백석읍 홍죽리 집근처
+						<br>종 : 피레니언마운틴독(수)
+						<br>사례금 : <b>300,000</b>원
+						<br>실종 날짜 : Date 2019-03-03
+					</div>
+					<div style="display:inline-block">
+						<img src="http://www.angel.or.kr/report/dog/upThumb/1551537235_1201237735.jpg"/>
+						
+						<p>지역 : 서울특별시 마포구
+						<br>실종 위치 : 연남동
+						<br>종 : 진돗개(암)
+						<br>사례금 : <b>500,000</b>원
+						<br>실종날짜 : Date 2019-02-06
+						</p>
+					</div>
+					<p id="content">
+						<button type="button" class="btn btn-warning" onclick="fn_onSetUrl()"> 영상 재생 </button>
+						<!-- HTML5 Canvas Tag -->
+						<canvas id="videoCanvas" style="width:100%;height:620px;border:1px solid"/>
+						<input  id="proxyhttpurl" name="proxyhttpurl" 
+											value="myIp:2022"/>
+						<!-- {RTSP프록시 서비스url(HTTP)} : 예) http://221.140.57.210:9080 -->
+					</p> 
+				</div>
+			<div class="clear"> </div>
+		</div>
+	</div>
+
+	<!-- cctv player 전역 선언 -->
+	<script> var player; </script>
+
+	<!-- Media player library load -->
+	<script type="text/javascript" src="{% static 'js/jsmpg.js'%}"></script>
+	<script type="text/javascript" src="{% static 'js/player_mpeg1video.js'%}"></script>
+
+	<script>
+		// cctv play
+		function fn_onSetUrl(url) {
+
+			// 이전의 play stop/close
+			fn_onCloseVideo();
+
+			// player 생성
+			player = new Player({ streamUrl : "rtsp://masds03.htc.com.tw/Bird_On_Aware_QCIF_5fps_mpeg4_23k_amr-nb_12k.mp4" });
+
+			// player 구동
+			player.init();
+		}
+
+		// cctv stop/close
+		function fn_onCloseVideo() {
+			if(player) {
+				player.closeVideo();
+			}
+		}
+	</script>
