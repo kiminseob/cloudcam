@@ -23,20 +23,24 @@
 
 ## 겪은 문제
 - 프록시 서버에서 웹소켓 데이터가 계속 날라오는 것까지 확인이 됐는데 영상이 안나온다.
+[영상]
 [![Video Label](http://t1.daumcdn.net/tvpot/thumb/vb38ecyoNaGNJT7NyqaNqJT/thumb.png)](https://tv.kakao.com/channel/2817707/cliplink/396988907)
 
 - 해결
+[영상]
 [![Video Label](http://t1.daumcdn.net/tvpot/thumb/v8294wmFt6tOVkiOwt6N6q6/thumb.png)](https://tv.kakao.com/channel/2817707/cliplink/396989242)
 
 문제는 바로 시간이었다. 처음에 웹 소켓에 연결하고 이 후에 수신된 스트리밍 데이터를 받기까지 시간이 2초 정도 걸린다. 즉, 처음에 소켓 연결을 하고 즉시 영상을 띄우려 했기 때문에 시간 차로 인해 영상이 나오지 않았던 것이었다. 그래서 프록시 서버로 웹 소켓 요청을 보낸 후, setTimeOut 함수를 두어 시간을 3초 정도 기다린 후 데이터를 수신했고 위와 같이 영상이 잘 나오는 것을 확인했다.
 
 ## 완성
+[영상]
 [![Video Label](http://t1.daumcdn.net/tvpot/thumb/va941hkzDzhMI80MhzMEDFI/thumb.png)](https://tv.kakao.com/channel/2817707/cliplink/396989708)
 
 ## 결과
 - 아쉽지만 개발 부문은 떨어지고 아이디어 부문이 당선됐다.
 
 ## 최종발표
+[영상]
 [![Video Label](http://t1.daumcdn.net/tvpot/thumb/v82145aIJIEmOQXMVm59MX5/thumb.png)](https://tv.kakao.com/channel/2817707/cliplink/396990399)
 
 ## 3등 우수상
